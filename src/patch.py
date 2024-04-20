@@ -10,3 +10,5 @@ class Data:
             self.msg = patch_json['msg']
         if 'score' in patch_json:
             self.score = patch_json['score']
+        if 'id' in patch_json:
+            self.id = patch_json['patch_id']

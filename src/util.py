@@ -22,11 +22,11 @@ def load_retriever_and_llm(top_k=5, model_name='mistral'):
     vector_store = WeaviateVectorStore(client, index_name = WEAVIATE_INDEX_NAME)
     storage_context = StorageContext.from_defaults(vector_store = vector_store, persist_dir=PERSIST_DIR)
 
-    print('index pulling starts\n')
+    # print('index pulling starts\n')
 
     index = VectorStoreIndex.from_vector_store(vector_store, storage_context=storage_context)
 
-    print('index pulled successfully\n')
+    # print('index pulled successfully\n')
 
     retriever = VectorIndexRetriever(index=index, similarity_top_k=top_k)
     llm = Ollama(model="mistral")

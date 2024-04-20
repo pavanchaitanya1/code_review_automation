@@ -55,7 +55,7 @@ def load_docs(filename: str):
         else:
             train_data1 = t_list
         for i in train_data1:
-            train_data.append(Document(text=i['patch'], extra_info={'y':i['y'], 'msg':i['msg'], 'proj':i['proj']}))
+            train_data.append(Document(text=i['patch'], extra_info={'y':i['y'], 'msg':i['msg'], 'proj':i['proj'], 'patch_id':i['id']}))
     
     store_test_data(test_data)
 

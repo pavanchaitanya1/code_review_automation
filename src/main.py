@@ -1,10 +1,6 @@
 from src.code_reviewer import CodeReviewer
 from src.util import load_test_data
 
-from git import Repo
-
-import numpy as np
-
 def main():
     code_reviewer = CodeReviewer()
     test_data = load_test_data()
