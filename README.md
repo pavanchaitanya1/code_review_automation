@@ -29,6 +29,12 @@ Install Docker application
 
 --------
 
+Setup, run below command in code_review_automation folder
+
+``` pip install -e . ```
+
+-----
+
 Setup Weaviate Vector DB locally
 
 go to the scripts folder and run below command
