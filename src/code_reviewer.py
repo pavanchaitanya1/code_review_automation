@@ -5,7 +5,7 @@ from src.prompts import REVIEW_NEEDED_PROMPT_PATCH, REVIEW_NEEDED_PROMPT_EXAMPLE
 from src.prompts import REVIEW_COMMENT_PROMPT_EXAMPLE, REVIEW_COMMENT_PROMPT_PATCH
 
 class CodeReviewer:
-    def __init__(self, top_k=5, model_name='mistal'):
+    def __init__(self, top_k=5, model_name='mistral'):
         self.top_k = top_k
         self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name)
 

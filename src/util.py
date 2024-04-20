@@ -16,7 +16,8 @@ import json
 def load_retriever_and_llm(top_k=5, model_name='mistral'):
     embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     Settings.embed_model = embed_model
-    Settings.llm = Ollama(model="mistral")
+    llm = Ollama(model=model_name)
+    Settings.llm = llm
 
     client = Client(url="http://localhost:8080")
     vector_store = WeaviateVectorStore(client, index_name = WEAVIATE_INDEX_NAME)
@@ -29,7 +30,6 @@ def load_retriever_and_llm(top_k=5, model_name='mistral'):
     # print('index pulled successfully\n')
 
     retriever = VectorIndexRetriever(index=index, similarity_top_k=top_k)
-    llm = Ollama(model="mistral")
 
     return retriever, llm
 
