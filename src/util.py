@@ -6,7 +6,7 @@ from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.vector_stores.weaviate import WeaviateVectorStore
 
 from src.constants import PERSIST_DIR, WEAVIATE_INDEX_NAME
-from src.patch_data import Data
+from src.patch import Data
 
 import numpy as np
 
