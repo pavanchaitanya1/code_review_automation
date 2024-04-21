@@ -4,8 +4,6 @@ import os
 
 YOUR_GITHUB_TOKEN = os.environ.get('ASE_GITHUB_API_KEY')
 
-print(YOUR_GITHUB_TOKEN)
-
 from github import Github
 
 app = Flask(__name__)

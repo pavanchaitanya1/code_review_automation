@@ -3,13 +3,14 @@ from src.util import load_test_data
 import pandas as pd
 
 
-def save_predictions(ids, true_results, pred_results):
+def save_predictions(ids, true_results, pred_results, model_name):
     data = {'Ids': ids, 'true values': true_results, 'pred values': pred_results}
     df = pd.DataFrame(data)
-    df.to_csv('../results/review_needed.csv', index=False)
+    df.to_csv('../results/review_needed_{}.csv'.format(model_name), index=False)
 
 def main():
-    code_reviewer = CodeReviewer(use_ollama=True)
+    model_name = 'llama2'
+    code_reviewer = CodeReviewer(use_ollama=True, model_name=model_name)
     test_data = load_test_data()
 
     true_values = []
@@ -17,7 +18,7 @@ def main():
     for data in test_data:
         true_values.append(data.y)
         ids.append(data.id)
-
+    
     pred_values = []
 
     count = 0
@@ -32,13 +33,12 @@ def main():
             else:
                 pred_values.append(0)
         except Exception as ex:
+            pred_values.append(-1)
             print(count, id)
             print(ex)
         count += 1
-        
-
     
-    save_predictions(ids, true_values, pred_values)
+    save_predictions(ids, true_values, pred_values, model_name)
 
 if __name__ == '__main__':
     main()

@@ -8,7 +8,7 @@ class CodeReviewer:
     def __init__(self, top_k=5, model_name='mistral', use_ollama=False):
         self.top_k = top_k
         self.use_ollama = use_ollama
-        print(use_ollama)
+        # print(use_ollama)
         self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name, use_ollama=use_ollama)
 
     def is_review_needed(self, patch: str):
@@ -16,7 +16,7 @@ class CodeReviewer:
 
         similar_docs = retrieve_similar_docs(self.retriever, patch)
 
-        print(len(similar_docs))
+        # print(len(similar_docs))
 
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
