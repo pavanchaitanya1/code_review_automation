@@ -37,8 +37,9 @@ def main():
     pred_y = []
     pred_msg = []
 
-    count = 1
+    count = 0
     for data in test_data:
+        count += 1
         patch = data.patch
         id = data.id
         print(count, id, '---------------')
@@ -64,7 +65,7 @@ def main():
             print(ex)
             pred_msg.append('')
 
-        count += 1
+        
     
     save_review_needed(ids, true_y, pred_y, model_name)
     save_review_comment(ids, true_msg, pred_msg, model_name)
