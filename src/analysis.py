@@ -7,8 +7,14 @@ from nltk.tokenize import word_tokenize
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_name', type=str, default='mistral')
+parser.add_argument('--use_rag', type=str, default='True')
 args = parser.parse_args()
 model_name = args.model_name
+use_rag = args.use_rag
+if use_rag == 'True':
+    use_rag = True
+else:
+    use_rag = False
 
 def calculate_bleu4(true_strings, pred_strings):
     bleu_scores = []
@@ -24,8 +30,12 @@ def calculate_metrics_review_needed(true_values, pred_values):
         true_values, pred_values, average='binary')
     return precision, recall, f1_score
 
-review_needed_filename = '../results/review_needed_{}.npz'.format(model_name)
-review_comments_filename = '../results/review_comment_{}.npz'.format(model_name)
+if use_rag:
+    review_needed_filename = '../results/review_needed_{}.npz'.format(model_name)
+    review_comments_filename = '../results/review_comment_{}.npz'.format(model_name)
+else:
+    review_needed_filename = '../results/review_needed_{}_no_rag.npz'.format(model_name)
+    review_comments_filename = '../results/review_comment_{}_no_rag.npz'.format(model_name)
 
 review_needed_data = np.load(review_needed_filename, allow_pickle=True)['arr_0'][0]
 review_comment_data = np.load(review_comments_filename, allow_pickle=True)['arr_0'][0]
