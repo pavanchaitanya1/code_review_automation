@@ -1,7 +1,13 @@
 import pandas as pd
 import numpy as np
+import argparse
 
-model_name = 'mistral'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--model_name', type=str, default='mistral')
+args = parser.parse_args()
+model_name = args.model_name
+
 review_needed_filename = '../results/review_comment_{}.npz'.format(model_name)
 
 review_needed_data = np.load(review_needed_filename, allow_pickle=True)['arr_0'][0]
