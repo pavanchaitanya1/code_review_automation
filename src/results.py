@@ -3,24 +3,36 @@ from src.util import load_test_data
 import numpy as np
 import argparse
 
-def save_review_needed(ids, true_results, pred_results, model_name):
-    filename = '../results/review_needed_{}.npz'
+def save_review_needed(ids, true_results, pred_results, model_name, is_rag):
+    if is_rag:
+        filename = '../results/review_needed_{}.npz'
+    else:
+        filename = '../results/review_needed_{}_no_rag.npz'
     data = [{'Ids': ids, 'true values': true_results, 'pred values': pred_results}]
     np.savez(filename.format(model_name), data)
 
-def save_review_comment(ids, true_results, pred_results, model_name):
-    filename = '../results/review_comment_{}.npz'
+def save_review_comment(ids, true_results, pred_results, model_name, is_rag):
+    if is_rag:
+        filename = '../results/review_comment_{}.npz'
+    else:
+        filename = '../results/review_comment_{}_no_rag.npz'
     data = [{'Ids': ids, 'true values': true_results, 'pred values': pred_results}]
     np.savez(filename.format(model_name), data)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, default='mistral')
+    parser.add_argument('--use_rag', type=str, default='True')
     args = parser.parse_args()
     model_name = args.model_name
+    use_rag = args.use_rag
+    if use_rag == 'True':
+        use_rag = True
+    else:
+        use_rag = False
     use_ollama = False
     
-    code_reviewer = CodeReviewer(use_ollama=use_ollama, model_name=model_name)
+    code_reviewer = CodeReviewer(use_ollama=use_ollama, model_name=model_name, use_rag=use_rag)
     test_data = load_test_data()
 
     test_data = test_data[:1]
@@ -66,8 +78,8 @@ def main():
 
         
     
-    save_review_needed(ids, true_y, pred_y, model_name)
-    save_review_comment(ids, true_msg, pred_msg, model_name)
+    save_review_needed(ids, true_y, pred_y, model_name, use_rag)
+    save_review_comment(ids, true_msg, pred_msg, model_name, use_rag)
 
 if __name__ == '__main__':
     main()

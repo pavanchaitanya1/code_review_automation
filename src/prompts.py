@@ -22,6 +22,18 @@ Answer :
 {{"reviewNeeded" : "{}"}}
 '''
 
+REVIEW_NEEDED_PROMPT_NO_RAG = '''
+You are a lead software engineer performing code reviews.
+
+For the below patch of code, answer whether it needs review or not. The response should only be in json format like below.
+
+{{"reviewNeeded" : "true" }} or {{"reviewNeeded" : "false" }}
+
+Patch:
+
+{}
+'''
+
 REVIEW_COMMENT_PROMPT_PATCH = '''
 You are a lead software engineer performing code reviews.
 
@@ -43,4 +55,16 @@ Patch :
 Answer :
 
 {{"reviewComment" : "{}"}}
+'''
+
+REVIEW_COMMENT_PROMPT_NO_RAG = '''
+You are a lead software engineer performing code reviews.
+
+For the below patch of code, generate one review comment. Although there could be multiple issues with the patch of code, only giv the most important suggestion. The response should only be in json format like below.
+
+{{"reviewComment" : "" }}
+
+Patch:
+
+{}
 '''
