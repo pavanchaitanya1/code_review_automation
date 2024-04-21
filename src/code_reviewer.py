@@ -25,8 +25,6 @@ class CodeReviewer:
         prompt += REVIEW_NEEDED_PROMPT_PATCH.format(patch)
         
         response = self.llm.complete(prompt)
-        if (not self.use_ollama) and not (self.model_name == 'GPT'):
-            response = response.text
         json_response = extract_json_from_text(response)
 
         try:
@@ -59,8 +57,6 @@ class CodeReviewer:
         prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
         
         response = self.llm.complete(prompt)
-        if (not self.use_ollama) and not (self.model_name == 'GPT'):
-            response = response.text
         json_response = extract_json_from_text(response)
 
         return json_response['reviewComment']

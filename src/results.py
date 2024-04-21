@@ -1,30 +1,29 @@
 from src.code_reviewer import CodeReviewer
 from src.util import load_test_data
-import pandas as pd
+import numpy as np
 import argparse
 
 def save_review_needed(ids, true_results, pred_results, model_name):
-    data = {'Ids': ids, 'true values': true_results, 'pred values': pred_results}
-    df = pd.DataFrame(data)
-    df.to_csv('../results/review_needed1_{}.csv'.format(model_name), index=False)
+    filename = '../results/review_needed_{}.npz'
+    data = [{'Ids': ids, 'true values': true_results, 'pred values': pred_results}]
+    np.savez(filename.format(model_name), data)
 
 def save_review_comment(ids, true_results, pred_results, model_name):
-    data = {'Ids': ids, 'true values': true_results, 'pred values': pred_results}
-    df = pd.DataFrame(data)
-    df.to_csv('../results/review_comment1_{}.csv'.format(model_name), index=False)
+    filename = '../results/review_comment_{}.npz'
+    data = [{'Ids': ids, 'true values': true_results, 'pred values': pred_results}]
+    np.savez(filename.format(model_name), data)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, default='mistral')
-    parser.add_argument('--use_ollama', type=bool, default='True')
     args = parser.parse_args()
     model_name = args.model_name
-    use_ollama = args.use_ollama
+    use_ollama = False
     
     code_reviewer = CodeReviewer(use_ollama=use_ollama, model_name=model_name)
     test_data = load_test_data()
 
-    # test_data = test_data[:1]
+    test_data = test_data[:1]
 
     true_y = []
     true_msg = []

@@ -7,7 +7,7 @@ from llama_index.vector_stores.weaviate import WeaviateVectorStore
 
 from src.constants import PERSIST_DIR, WEAVIATE_INDEX_NAME
 from src.patch import Data
-from src.llm import LLM, GPTModel
+from src.llm import LLM, GPTModel, MistralModel
 
 import numpy as np
 
@@ -42,6 +42,8 @@ def load_retriever_and_llm(top_k=5, model_name='mistral', use_ollama=False):
 
     if model_name == 'GPT':
         llm = GPTModel()
+    elif model_name == 'mistral':
+        llm = MistralModel()
     elif use_ollama:
         llm = LLM(model_name)
     else:

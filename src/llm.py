@@ -1,5 +1,6 @@
 import ollama
 from openai import OpenAI
+import os
 
 class LLM:
     def __init__(self, model_name):
@@ -26,4 +27,24 @@ class GPTModel:
                 {"role": "user", "content": prompt}
             ]
             )
+        return response.choices[0].message.content
+    
+class MistralModel:
+    def __init__(self):
+        api_key = os.environ.get('MISTRAL_API_KEY')
+        print(api_key)
+        self.client = OpenAI(
+            api_key =  os.environ.get('MISTRAL_API_KEY'),
+            base_url="https://api.lemonfox.ai/v1",
+        )
+
+    def complete(self, prompt):
+        response = self.client.chat.completions.create(
+        messages=[
+            { "role": "system", "content": "You are a lead software engineer performing code reviews." },
+            { "role": "user", "content": prompt }
+        ],
+        model="mixtral-chat",
+        )
+
         return response.choices[0].message.content
