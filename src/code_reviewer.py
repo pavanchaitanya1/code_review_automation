@@ -5,30 +5,48 @@ from src.prompts import REVIEW_NEEDED_PROMPT_PATCH, REVIEW_NEEDED_PROMPT_EXAMPLE
 from src.prompts import REVIEW_COMMENT_PROMPT_EXAMPLE, REVIEW_COMMENT_PROMPT_PATCH
 
 class CodeReviewer:
-    def __init__(self, top_k=5, model_name='mistral'):
+    def __init__(self, top_k=5, model_name='mistral', use_ollama=False):
         self.top_k = top_k
-        self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name)
+        self.use_ollama = use_ollama
+        print(use_ollama)
+        self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name, use_ollama=use_ollama)
 
     def is_review_needed(self, patch: str):
-        prompt = REVIEW_NEEDED_PROMPT_PATCH.format(patch)
+        prompt = ''
 
         similar_docs = retrieve_similar_docs(self.retriever, patch)
+
+        print(len(similar_docs))
+
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
             prompt += REVIEW_NEEDED_PROMPT_EXAMPLE.format(i+1, doc.patch, yes_no(doc))
         
-        response = self.llm.complete(prompt)
-        json_response = extract_json_from_text(response.text)
+        prompt += REVIEW_NEEDED_PROMPT_PATCH.format(patch)
 
-        if json_response['reviewNeeded'] == 'false':
-            return False
-        else:
-            return True
+        #print(prompt)
+
+        #print('\n-------------\n')
+        
+        response = self.llm.complete(prompt)
+        if not self.use_ollama:
+            response = response.text
+        json_response = extract_json_from_text(response)
+
+        try:
+            if json_response['reviewNeeded'] == 'false':
+                return False
+            else:
+                return True
+        except Exception as ex:
+            print('Error in Json: \n' + response)
+            raise Exception('Json Parsing Failed')
+
 
     def generate_review_comment(self, patch: str):
         self.retriever.similarity_top_k = 20
 
-        prompt = REVIEW_COMMENT_PROMPT_PATCH.format(patch)
+        prompt = ''
 
         similar_docs = retrieve_similar_docs(self.retriever, patch)
         similar_docs = filter_docs(similar_docs)
@@ -40,8 +58,12 @@ class CodeReviewer:
             doc = similar_docs[i]
             prompt += REVIEW_COMMENT_PROMPT_EXAMPLE.format(i+1, doc.patch, yes_no(doc))
         
+        prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
+        
         response = self.llm.complete(prompt)
-        json_response = extract_json_from_text(response.text)
+        if not self.use_ollama:
+            response = response.text
+        json_response = extract_json_from_text(response)
 
         return json_response['reviewComment']
     

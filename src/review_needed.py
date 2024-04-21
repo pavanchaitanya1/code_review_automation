@@ -9,10 +9,8 @@ def save_predictions(ids, true_results, pred_results):
     df.to_csv('../results/review_needed.csv', index=False)
 
 def main():
-    code_reviewer = CodeReviewer()
+    code_reviewer = CodeReviewer(use_ollama=True)
     test_data = load_test_data()
-
-    print(len(test_data))
 
     true_values = []
     ids =[]
@@ -22,13 +20,23 @@ def main():
 
     pred_values = []
 
+    count = 0
     for data in test_data:
         patch = data.patch
-        review_needed = code_reviewer.is_review_needed(patch)
-        if review_needed:
-            pred_values.append(1)
-        else:
-            pred_values.append(0)
+        id = data.id
+        try:
+            review_needed = code_reviewer.is_review_needed(patch)
+            print(count, id, review_needed)
+            if review_needed:
+                pred_values.append(1)
+            else:
+                pred_values.append(0)
+        except Exception as ex:
+            print(count, id)
+            print(ex)
+        count += 1
+        
+
     
     save_predictions(ids, true_values, pred_values)
 

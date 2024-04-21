@@ -18,6 +18,8 @@ llama_index-embeddings-langchain
 llama-index-vector-stores-weaviate
 llama-index-embeddings-huggingface
 weaviate-client
+flask
+PyGithub
 
 ------
 
@@ -50,4 +52,19 @@ Go to src folder and run
 python3 create_index.py
 
 python3 main.py
+
+
+------------
+
+Flask running
+
+once flask is installed, run 
+
+``` python3 app.py ```
+
+-----------
+
+SocketXP setup (for public url)
+
+https://www.socketxp.com/iot/remote-access-python-flask-app-from-internet/
 
