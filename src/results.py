@@ -24,7 +24,7 @@ def main():
     code_reviewer = CodeReviewer(use_ollama=use_ollama, model_name=model_name)
     test_data = load_test_data()
 
-    test_data = test_data[:1]
+    # test_data = test_data[:1]
 
     true_y = []
     true_msg = []
