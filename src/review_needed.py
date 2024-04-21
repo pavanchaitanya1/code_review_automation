@@ -1,6 +1,7 @@
 from src.code_reviewer import CodeReviewer
 from src.util import load_test_data
 import pandas as pd
+import argparse
 
 
 def save_predictions(ids, true_results, pred_results, model_name):
@@ -9,9 +10,15 @@ def save_predictions(ids, true_results, pred_results, model_name):
     df.to_csv('../results/review_needed_{}.csv'.format(model_name), index=False)
 
 def main():
-    model_name = 'GPT'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_name', type=str, default='mistral')
+    args = parser.parse_args()
+    model_name = args.model_name
+    
     code_reviewer = CodeReviewer(use_ollama=True, model_name=model_name)
     test_data = load_test_data()
+
+    test_data = test_data[:1]
 
     true_values = []
     ids =[]
