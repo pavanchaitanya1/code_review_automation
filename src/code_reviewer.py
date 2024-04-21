@@ -16,6 +16,8 @@ class CodeReviewer:
 
         similar_docs = retrieve_similar_docs(self.retriever, patch)
 
+        print('Simiar Docs Length: ', len(similar_docs))
+
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
             prompt += REVIEW_NEEDED_PROMPT_EXAMPLE.format(i+1, doc.patch, yes_no(doc))
@@ -47,6 +49,8 @@ class CodeReviewer:
         similar_docs = similar_docs[:self.top_k]
 
         self.retriever.similarity_top_k = self.top_k
+
+        print('Simiar Docs Length: ', len(similar_docs))
 
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
