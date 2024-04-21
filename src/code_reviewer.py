@@ -54,7 +54,7 @@ class CodeReviewer:
 
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
-            prompt += REVIEW_COMMENT_PROMPT_EXAMPLE.format(i+1, doc.patch, yes_no(doc))
+            prompt += REVIEW_COMMENT_PROMPT_EXAMPLE.format(i+1, doc.patch, doc.msg)
         
         prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
         
