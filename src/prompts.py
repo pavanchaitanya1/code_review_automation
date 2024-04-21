@@ -68,3 +68,16 @@ Patch:
 
 {}
 '''
+
+
+REVIEW_COMMENT_PROMPT_NO_YES_NO = '''
+You are a lead software engineer performing code reviews.
+
+For the below patch of code, generate one review comment. Although there could be multiple issues with the patch of code, only give the most important suggestion. The response should only be in json format like below. If you think no review is needed for this patch of code, give the reviewComment as empty string.
+
+{{"reviewComment" : "" }}
+
+Patch:
+
+{}
+'''
