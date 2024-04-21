@@ -16,17 +16,11 @@ class CodeReviewer:
 
         similar_docs = retrieve_similar_docs(self.retriever, patch)
 
-        # print(len(similar_docs))
-
         for i in range(len(similar_docs)):
             doc = similar_docs[i]
             prompt += REVIEW_NEEDED_PROMPT_EXAMPLE.format(i+1, doc.patch, yes_no(doc))
         
         prompt += REVIEW_NEEDED_PROMPT_PATCH.format(patch)
-
-        #print(prompt)
-
-        #print('\n-------------\n')
         
         response = self.llm.complete(prompt)
         if (not self.use_ollama) and not (self.model_name == 'GPT'):
@@ -61,7 +55,7 @@ class CodeReviewer:
         prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
         
         response = self.llm.complete(prompt)
-        if not self.use_ollama:
+        if (not self.use_ollama) and not (self.model_name == 'GPT'):
             response = response.text
         json_response = extract_json_from_text(response)
 
