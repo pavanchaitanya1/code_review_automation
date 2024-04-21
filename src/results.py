@@ -56,9 +56,14 @@ def main():
             pred_msg.append('')
             print(ex)
             continue
-        review_comment = code_reviewer.generate_review_comment(patch)
-        print(review_comment)
-        pred_msg.append(review_comment)
+        try:
+            review_comment = code_reviewer.generate_review_comment(patch)
+            print(review_comment)
+            pred_msg.append(review_comment)
+        except Exception as ex:
+            print(ex)
+            pred_msg.append('')
+
         count += 1
     
     save_review_needed(ids, true_y, pred_y, model_name)
