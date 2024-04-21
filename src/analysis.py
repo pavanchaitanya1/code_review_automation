@@ -4,7 +4,6 @@ import argparse
 from nltk.translate.bleu_score import sentence_bleu
 from sklearn.metrics import precision_recall_fscore_support
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_name', type=str, default='mistral')
 args = parser.parse_args()
