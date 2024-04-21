@@ -8,7 +8,7 @@ class CodeReviewer:
     def __init__(self, top_k=5, model_name='mistral', use_ollama=False):
         self.top_k = top_k
         self.use_ollama = use_ollama
-        # print(use_ollama)
+        self.model_name = model_name
         self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name, use_ollama=use_ollama)
 
     def is_review_needed(self, patch: str):
@@ -29,7 +29,7 @@ class CodeReviewer:
         #print('\n-------------\n')
         
         response = self.llm.complete(prompt)
-        if not self.use_ollama:
+        if (not self.use_ollama) and not (self.model_name == 'GPT'):
             response = response.text
         json_response = extract_json_from_text(response)
 

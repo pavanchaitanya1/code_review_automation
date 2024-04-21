@@ -9,7 +9,7 @@ def save_predictions(ids, true_results, pred_results, model_name):
     df.to_csv('../results/review_needed_{}.csv'.format(model_name), index=False)
 
 def main():
-    model_name = 'llama2'
+    model_name = 'GPT'
     code_reviewer = CodeReviewer(use_ollama=True, model_name=model_name)
     test_data = load_test_data()
 

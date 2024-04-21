@@ -7,7 +7,7 @@ from llama_index.vector_stores.weaviate import WeaviateVectorStore
 
 from src.constants import PERSIST_DIR, WEAVIATE_INDEX_NAME
 from src.patch import Data
-from src.llm import LLM
+from src.llm import LLM, GPTModel
 
 import numpy as np
 
@@ -40,7 +40,9 @@ def load_retriever_and_llm(top_k=5, model_name='mistral', use_ollama=False):
 
     retriever = VectorIndexRetriever(index=index, similarity_top_k=top_k)
 
-    if use_ollama:
+    if model_name == 'GPT':
+        llm = GPTModel()
+    elif use_ollama:
         llm = LLM(model_name)
     else:
         llm = Ollama(model=model_name, request_timeout=120)
@@ -67,6 +69,7 @@ def retrieve_similar_docs(retriever: VectorIndexRetriever, patch: str):
 
 def extract_json_from_text(text: str):
     try:
+        text = text.replace('\n', "")
         json_pattern = r'{.*?}'
         json_strings = re.findall(json_pattern, text)
         if len(json_strings) == 0:
