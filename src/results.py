@@ -49,7 +49,7 @@ def main():
         use_rag=use_rag, use_yes_no=use_yes_no)
     test_data = load_test_data()
 
-    test_data = test_data[:1]
+    # test_data = test_data[:1]
 
     true_y = []
     true_msg = []
