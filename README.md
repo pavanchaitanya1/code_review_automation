@@ -68,3 +68,8 @@ SocketXP setup (for public url)
 
 https://www.socketxp.com/iot/remote-access-python-flask-app-from-internet/
 
+Once it is setup, you need to below steps for setting up local server
+
+``` sudo socketxp login <auth0-key> ```
+``` sudo socketxp connect <ip-from-flask> ```
+

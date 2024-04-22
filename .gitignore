@@ -5,3 +5,5 @@
 *results_local*
 *.vscode
 *.DS_Store
+*.log
+*_example*

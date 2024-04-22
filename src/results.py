@@ -37,7 +37,7 @@ def main():
     else:
         use_rag = False
     
-    use_yes_no = parser.parse_args()
+    use_yes_no = args.yes_no
     if use_yes_no == 'True':
         use_yes_no = True
     else:

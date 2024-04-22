@@ -80,7 +80,6 @@ class CodeReviewer:
         json_response = extract_json_from_text(response)
 
         if self.github_bot:
-            print('hi')
             print(json_response['reviewComment'])
             print(json_response['lineNumber'])
             return json_response['reviewComment'], json_response['lineNumber']

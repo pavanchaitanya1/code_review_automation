@@ -86,7 +86,7 @@ REVIEW_COMMENT_PROMPT_GITHUB = '''
 You are a lead software engineer performing code reviews.
 
 For the below patch of code, generate one review comment. Although there could be multiple issues with the patch of code, only give the most important suggestion. Example patches of code and expected answers are given above. Use these examples as reference context and generate response in the same format as the answers. The response should only be in json format:
-{{"reviewComment" : “ ”, “lineNumber”: ” ”}}
+{{"reviewComment" : " ", "lineNumber": " "}}
 
 
 Patch:
