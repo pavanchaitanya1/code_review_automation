@@ -8,7 +8,13 @@ from github import Github
 
 app = Flask(__name__)
 
-code_reviewer = CodeReviewer(model_name='mistral', top_k=2, use_ollama=True)
+def getStartEndLineNum(patch):
+    lines = patch.strip().split('\n')
+    first_line_number = int(lines[0].split(' ')[1].split(',')[0])
+    last_line_number = first_line_number + len(lines) - 1
+    return first_line_number, last_line_number
+
+code_reviewer = CodeReviewer(model_name='mistral', top_k=2, github_bot=True)
 
 @app.route('/', methods=['GET', 'POST']) # type: ignore
 def handle_request():
@@ -31,8 +37,11 @@ def handle_request():
             review_needed = code_reviewer.is_review_needed(file.patch)
             print(review_needed)
             if review_needed:
-                review_comment = code_reviewer.generate_review_comment(file.patch)
-                print(review_comment)
+                review_comment, line_number = code_reviewer.generate_review_comment(file.patch)
+                start_line_num, end_line_num  = getStartEndLineNum(patch)
+                if (not (line_number>= start_line_num and line_number<=end_line_num)):
+                    line_number = end_line_num
+                print(review_comment, line_number)
         return 'done'
 
     elif request.method == 'GET':

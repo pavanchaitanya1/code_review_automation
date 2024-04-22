@@ -1,17 +1,17 @@
 
 from src.util import load_retriever_and_llm, load_test_data, retrieve_similar_docs
 from src.util import extract_json_from_text, yes_no, filter_docs
-from src.prompts import REVIEW_NEEDED_PROMPT_PATCH, REVIEW_NEEDED_PROMPT_EXAMPLE, REVIEW_NEEDED_PROMPT_NO_RAG
-from src.prompts import REVIEW_COMMENT_PROMPT_EXAMPLE, REVIEW_COMMENT_PROMPT_PATCH, REVIEW_COMMENT_PROMPT_NO_RAG
-from src.prompts import REVIEW_COMMENT_PROMPT_NO_YES_NO
+from src.prompts import *
 
 class CodeReviewer:
-    def __init__(self, top_k=5, model_name='mistral', use_ollama=False, use_rag=True, use_yes_no=True):
+    def __init__(self, top_k=5, model_name='mistral', use_ollama=False, use_rag=True, use_yes_no=True, github_bot=False):
         self.top_k = top_k
         self.use_ollama = use_ollama
         self.model_name = model_name
         self.use_rag = use_rag
         self.use_yes_no = use_yes_no
+        self.github_bot = github_bot
+        print('github bot', self.github_bot)
         self.retriever, self.llm = load_retriever_and_llm(top_k=top_k, model_name=model_name, use_ollama=use_ollama)
 
     def is_review_needed(self, patch: str):
@@ -63,16 +63,28 @@ class CodeReviewer:
                 prompt += REVIEW_COMMENT_PROMPT_EXAMPLE.format(i+1, doc.patch, doc.msg)
             
             if self.use_yes_no:
-                prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
+                if self.github_bot:
+                    prompt+= REVIEW_COMMENT_PROMPT_GITHUB.format(patch)
+                else:
+                    prompt += REVIEW_COMMENT_PROMPT_PATCH.format(patch)
             else:
                 prompt += REVIEW_COMMENT_PROMPT_NO_YES_NO.format(patch)
 
         else:
             prompt += REVIEW_COMMENT_PROMPT_NO_RAG.format(patch)
+
+        print(prompt)
+        print("--------")
         
         response = self.llm.complete(prompt)
         json_response = extract_json_from_text(response)
 
+        if self.github_bot:
+            print('hi')
+            print(json_response['reviewComment'])
+            print(json_response['lineNumber'])
+            return json_response['reviewComment'], json_response['lineNumber']
+        
         return json_response['reviewComment']
     
 
