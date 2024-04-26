@@ -17,7 +17,7 @@ def save_review_needed(ids, true_results, pred_results, model_name, is_rag, use_
 
 def save_review_comment(ids, true_results, pred_results, model_name, is_rag, use_yes_no, file_name):
     if file_name != '':
-        filename = '../results/review_needed_{}_'+ file_name + '.npz'
+        filename = '../results/review_comment_{}_'+ file_name + '.npz'
     elif not use_yes_no:
         filename = '../results/review_comment_{}_no_yes_no.npz'
     elif is_rag:
@@ -64,7 +64,7 @@ def main():
 
         test_data = load_test_data_from_file(filename)
 
-    test_data = test_data[:1]
+    # test_data = test_data[:1]
 
     true_y = []
     true_msg = []
