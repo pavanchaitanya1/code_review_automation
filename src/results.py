@@ -1,10 +1,12 @@
 from src.code_reviewer import CodeReviewer
-from src.util import load_test_data
+from src.util import load_test_data, load_test_data_from_file
 import numpy as np
 import argparse
 
-def save_review_needed(ids, true_results, pred_results, model_name, is_rag, use_yes_no):
-    if not use_yes_no:
+def save_review_needed(ids, true_results, pred_results, model_name, is_rag, use_yes_no, file_name):
+    if file_name != '':
+        filename = '../results/review_needed_{}_'+ file_name + '.npz'
+    elif not use_yes_no:
         filename = '../results/review_needed_{}_no_yes_no.npz'
     elif is_rag:
         filename = '../results/review_needed_{}.npz'
@@ -13,8 +15,10 @@ def save_review_needed(ids, true_results, pred_results, model_name, is_rag, use_
     data = [{'Ids': ids, 'true values': true_results, 'pred values': pred_results}]
     np.savez(filename.format(model_name), data)
 
-def save_review_comment(ids, true_results, pred_results, model_name, is_rag, use_yes_no):
-    if not use_yes_no:
+def save_review_comment(ids, true_results, pred_results, model_name, is_rag, use_yes_no, file_name):
+    if file_name != '':
+        filename = '../results/review_needed_{}_'+ file_name + '.npz'
+    elif not use_yes_no:
         filename = '../results/review_comment_{}_no_yes_no.npz'
     elif is_rag:
         filename = '../results/review_comment_{}.npz'
@@ -28,8 +32,11 @@ def main():
     parser.add_argument('--model_name', type=str, default='mistral')
     parser.add_argument('--use_rag', type=str, default='True')
     parser.add_argument('--yes_no', type=str, default='True')
+    parser.add_argument('--filename', type=str, default='')
+
     args = parser.parse_args()
     model_name = args.model_name
+    filename = args.filename
 
     use_rag = args.use_rag
     if use_rag == 'True':
@@ -44,12 +51,20 @@ def main():
         use_yes_no = False
     use_ollama = False
     
-    code_reviewer = CodeReviewer(
+    if filename == '':
+        code_reviewer = CodeReviewer(
         use_ollama=use_ollama, model_name=model_name, 
         use_rag=use_rag, use_yes_no=use_yes_no)
-    test_data = load_test_data()
 
-    # test_data = test_data[:1]
+        test_data = load_test_data()
+    else:
+        code_reviewer = CodeReviewer(
+        use_ollama=use_ollama, model_name=model_name, 
+        use_rag=use_rag, use_yes_no=use_yes_no, use_train_store=True)
+
+        test_data = load_test_data_from_file(filename)
+
+    test_data = test_data[:1]
 
     true_y = []
     true_msg = []
@@ -91,10 +106,8 @@ def main():
             print(ex)
             pred_msg.append('')
 
-        
-    
-    save_review_needed(ids, true_y, pred_y, model_name, use_rag, use_yes_no)
-    save_review_comment(ids, true_msg, pred_msg, model_name, use_rag, use_yes_no)
+    save_review_needed(ids, true_y, pred_y, model_name, use_rag, use_yes_no, filename)
+    save_review_comment(ids, true_msg, pred_msg, model_name, use_rag, use_yes_no, filename)
 
 if __name__ == '__main__':
     main()

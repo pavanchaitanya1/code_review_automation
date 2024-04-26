@@ -23,10 +23,12 @@ app = Flask(__name__)
 def fix_line_number(patch, line_number):
     line_number = int(line_number)
     lines = patch.strip().split('\n')
-    start_line_num = int(lines[0].split(' ')[1].split(',')[0])
-    end_line_num = start_line_num + len(lines) - 1
-    if (not (line_number>= start_line_num and line_number<=end_line_num)):
-        line_number = end_line_num
+    start_line_num = abs(int(lines[0].split(' ')[1].split(',')[0]))
+    # print(start_line_num, line_number)
+    line_number += start_line_num
+    # end_line_num = start_line_num + len(lines) - 1
+    # if (not (line_number>= start_line_num and line_number<=end_line_num)):
+    #     line_number = end_line_num
     return line_number
 
 
@@ -41,7 +43,9 @@ def execute_post(data):
         patch = file.patch
         
         review_needed = code_reviewer.is_review_needed(patch)
+        print('----------------')
         print('Is Review Needed:', review_needed)
+        print('------------------')
 
         if review_needed:
             review_comment, line_number = code_reviewer.generate_review_comment(patch)

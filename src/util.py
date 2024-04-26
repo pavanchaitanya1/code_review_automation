@@ -5,7 +5,7 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.vector_stores.weaviate import WeaviateVectorStore
 
-from src.constants import PERSIST_DIR, WEAVIATE_INDEX_NAME
+from src.constants import PERSIST_DIR, WEAVIATE_INDEX_NAME, PERSIST_DIR_TRAIN, WEAVIATE_INDEX_NAME_TRAIN
 from src.patch import Data
 from src.llm import LLM, GPTModel, MistralModel, PerplixityModel
 
@@ -24,13 +24,18 @@ class LazyDecoder(json.JSONDecoder):
             s = regex.sub(replacement, s)
         return super().decode(s, **kwargs)
 
-def load_retriever_and_llm(top_k=5, model_name='mistral', use_ollama=False):
+def load_retriever_and_llm(top_k=5, model_name='mistral', use_ollama=False, use_train_store=False):
     embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
     Settings.embed_model = embed_model
 
     client = Client(url="http://localhost:8080")
-    vector_store = WeaviateVectorStore(client, index_name = WEAVIATE_INDEX_NAME)
-    storage_context = StorageContext.from_defaults(vector_store = vector_store, persist_dir=PERSIST_DIR)
+    if not use_train_store:
+        vector_store = WeaviateVectorStore(client, index_name = WEAVIATE_INDEX_NAME)
+        storage_context = StorageContext.from_defaults(vector_store = vector_store, persist_dir=PERSIST_DIR)
+    else:
+        print('using train store')
+        vector_store = WeaviateVectorStore(client, index_name = WEAVIATE_INDEX_NAME_TRAIN)
+        storage_context = StorageContext.from_defaults(vector_store = vector_store, persist_dir=PERSIST_DIR_TRAIN)
 
     # print('index pulling starts\n')
 
@@ -57,6 +62,15 @@ def load_test_data():
     test_data = np.load(test_data_file, allow_pickle=True)['arr_0']
     return [Data(i) for i in test_data]
 
+def load_test_data_from_file(filename):
+    test_data = []
+    filepath = '../data/code_reviewer/diff_quality_estimation/' + filename
+    with open(filepath, 'r') as f:
+        for line in f:
+            test_data.append(Data(json.loads(line)))
+    return test_data
+
+
 def retrieve_similar_docs(retriever: VectorIndexRetriever, patch: str):
     similar_patches = retriever.retrieve(patch)
     docs = []
@@ -65,7 +79,8 @@ def retrieve_similar_docs(retriever: VectorIndexRetriever, patch: str):
         patch_object['patch'] = doc.text
         patch_object['score'] = doc.score
         metadata = doc.metadata
-        patch_object['proj'] = metadata['proj']
+        if 'proj' in metadata:
+            patch_object['proj'] = metadata['proj']
         patch_object['y'] = metadata['y']
         patch_object['msg'] = metadata['msg']
         docs.append(Data(patch_object))
@@ -81,7 +96,9 @@ def extract_json_from_text(text: str):
             return
         elif len(json_strings) > 1:
             print('Multiple Proper Json in the LLM Response: \n' + text)
-            return
+            json_string = json_strings[0]
+            json_data = json.loads(json_string, cls=LazyDecoder)
+            return json_data
         else:
             json_string = json_strings[0]
             json_data = json.loads(json_string, cls=LazyDecoder)
